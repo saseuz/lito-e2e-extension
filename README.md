@@ -1,6 +1,19 @@
-# Lito popup preview
+# Lito E2E extension
 
 React + TypeScript + Vite, Chrome Manifest V3. The popup uses the Laravel public API for live Merriam-Webster definitions; it never calls Merriam-Webster directly. API contract and licensing decision: `../backend/docs/public-lookup-api.md`.
+
+## Current design
+
+The popup uses a centered, warm dictionary-card layout inspired by the approved Lito E2E reference screens:
+
+- The header shows **Lito E2E**, the “A word worth knowing.” tagline, and a light/dark theme button.
+- The search control is full-width with a Lucide search icon, clear control, and centered arrow submit button.
+- The empty state explains the four capabilities: definitions, pronunciation, examples, and trusted sources. It includes the built-in books illustration.
+- A successful lookup shows the word, part-of-speech badge, pronunciation/audio when available, and tabs for **Meanings**, **Examples**, and **Source**.
+- Meanings are displayed in numbered cards; source attribution remains visible with the official Merriam-Webster logo when applicable.
+- Loading, unavailable-provider, and not-found states have their own centered messages.
+
+Tailwind CSS is loaded through the Vite plugin, while the design tokens and extension-specific layout rules remain in `src/style.css`. Interface icons come from `lucide-react`; the books illustration is the product artwork rather than an icon.
 
 ## Development and loading Chrome
 
