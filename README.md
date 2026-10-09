@@ -15,6 +15,14 @@ The popup uses a centered, warm dictionary-card layout inspired by the approved 
 
 Tailwind CSS is loaded through the Vite plugin, while the design tokens and extension-specific layout rules remain in `src/style.css`. Interface icons come from `lucide-react`; the books illustration is the product artwork rather than an icon.
 
+### Welcome screen
+
+![Lito E2E welcome screen](docs/screenshots/Lito_E2E.png)
+
+### Lookup result
+
+![Lito E2E lookup result](docs/screenshots/Lito_E2E_1.png)
+
 ## Development and loading Chrome
 
 1. Start Laravel from `backend/` with `php artisan serve --host=127.0.0.1 --port=8000`. Configure the existing server-side `MERRIAM_WEBSTER_PRODUCT` and matching API key. No fixture seeding is required.
