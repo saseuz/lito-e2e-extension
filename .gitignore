@@ -5,3 +5,4 @@ dist-safari/
 safari-xcode/
 .env.local
 .env.*.local
+.env
