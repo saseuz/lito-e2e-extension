@@ -6,6 +6,12 @@
   "scripts": {
     "build": "tsc --noEmit && vite build",
     "build:dev": "tsc --noEmit && vite build --mode development",
+    "build:firefox": "node scripts/build-browser.mjs firefox production",
+    "build:firefox:dev": "node scripts/build-browser.mjs firefox development",
+    "build:safari": "node scripts/build-browser.mjs safari production",
+    "build:safari:dev": "node scripts/build-browser.mjs safari development",
+    "build:all:dev": "node scripts/build-browser.mjs chromium development && node scripts/build-browser.mjs firefox development && node scripts/build-browser.mjs safari development",
+    "test": "node --test tests/*.test.mjs",
     "check": "tsc --noEmit"
   },
   "dependencies": {

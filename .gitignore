@@ -1,4 +1,7 @@
 node_modules/
 dist/
+dist-firefox/
+dist-safari/
+safari-xcode/
 .env.local
 .env.*.local

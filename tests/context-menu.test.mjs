@@ -3,18 +3,18 @@ import { runInNewContext } from 'node:vm';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-function setup() {
+function setup(namespace = 'chrome') {
   const windows = [];
   let installed, clicked, menu;
   const chrome = {
     runtime: { onInstalled: { addListener(fn) { installed = fn; } }, getURL: path => `chrome-extension://lito/${path}` },
     contextMenus: {
-      removeAll(fn) { fn(); }, create(value) { menu = value; },
+      removeAll(fn) { if (namespace === 'browser') return Promise.resolve(); fn(); }, create(value) { menu = value; },
       onClicked: { addListener(fn) { clicked = fn; } },
     },
     windows: { create(value) { windows.push(value); } },
   };
-  runInNewContext(readFileSync(new URL('../public/background.js', import.meta.url), 'utf8'), { chrome, URLSearchParams });
+  runInNewContext(readFileSync(new URL('../public/background.js', import.meta.url), 'utf8'), { [namespace]: chrome, URLSearchParams });
   return { installed, clicked, windows, menu: () => menu };
 }
 
@@ -38,4 +38,14 @@ test('ignores unrelated or empty selections and routes oversized text to a local
   assert.equal(app.windows.length, 0);
   app.clicked({ menuItemId: 'lito-lookup-selection', selectionText: 'x'.repeat(256) });
   assert.ok(app.windows[0].url.endsWith('#selectionError=too-long'));
+});
+
+test('promise-based browser namespace registers menus and opens selected words', async () => {
+  const app = setup('browser');
+  await app.installed();
+  assert.equal(app.menu().id, 'lito-lookup-selection');
+  app.clicked({ menuItemId: 'lito-lookup-selection', selectionText: ' café ' });
+  assert.equal(new URLSearchParams(new URL(app.windows[0].url).hash.slice(1)).get('word'), 'café');
+  await app.installed();
+  assert.equal(app.menu().id, 'lito-lookup-selection');
 });

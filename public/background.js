@@ -1,16 +1,24 @@
 const MENU_ID = 'lito-lookup-selection';
+// Firefox/Safari expose promise-based browser APIs; Chromium also supports chrome.
+const extension = globalThis.browser || globalThis.chrome;
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.removeAll(() => {
-    chrome.contextMenus.create({
+extension.runtime.onInstalled.addListener(async () => {
+  const createMenu = () => {
+    extension.contextMenus.create({
       id: MENU_ID,
-      title: 'Look up “%s” in Lito E2E',
+      title: 'Look up “%s” in Lito Dictionary',
       contexts: ['selection'],
     });
-  });
+  };
+  if (globalThis.browser) {
+    await extension.contextMenus.removeAll();
+    createMenu();
+  } else {
+    extension.contextMenus.removeAll(createMenu);
+  }
 });
 
-chrome.contextMenus.onClicked.addListener((info) => {
+extension.contextMenus.onClicked.addListener((info) => {
   if (info.menuItemId !== MENU_ID) return;
   const word = (info.selectionText || '').normalize('NFC').trim();
   if (!word) return;
@@ -18,8 +26,8 @@ chrome.contextMenus.onClicked.addListener((info) => {
   const fragment = new URLSearchParams(word.length > 255
     ? { selectionError: 'too-long' }
     : { word });
-  chrome.windows.create({
-    url: `${chrome.runtime.getURL('index.html')}#${fragment}`,
+  extension.windows.create({
+    url: `${extension.runtime.getURL('index.html')}#${fragment}`,
     type: 'popup', width: 540, height: 760, focused: true,
   });
 });
